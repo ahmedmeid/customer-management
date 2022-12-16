@@ -1,0 +1,37 @@
+{
+  "applications": ["gateway", "customerManagement"],
+  "changelogDate": "20221216165851",
+  "clientRootFolder": "customerManagement",
+  "databaseType": "sql",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "vehicle",
+  "fields": [
+    {
+      "fieldName": "vehicleId",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique", "required"]
+    },
+    {
+      "fieldName": "vehicleRegNo",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique", "required"]
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "microserviceName": "customerManagement",
+  "name": "Vehicle",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "customer",
+      "relationshipName": "owner",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "service": "no"
+}
