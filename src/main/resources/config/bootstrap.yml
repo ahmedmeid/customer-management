@@ -26,5 +26,5 @@ spring:
           - git-branch=${git.branch:}
           - context-path=${server.servlet.context-path:}
 
-      host: localhost
+      host: ${CONSUL_HOST}
       port: 8500

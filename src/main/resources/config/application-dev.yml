@@ -44,7 +44,7 @@ spring:
           - git-version=${git.commit.id.describe:}
           - git-commit=${git.commit.id.abbrev:}
           - git-branch=${git.branch:}
-      host: localhost
+      host: ${CONSUL_HOST}
       port: 8500
   h2:
     console:

@@ -55,7 +55,7 @@ management:
           ]
   endpoint:
     health:
-      show-details: when_authorized
+      show-details: WHEN_AUTHORIZED
       roles: 'ROLE_ADMIN'
       probes:
         enabled: true
@@ -118,7 +118,7 @@ spring:
         binder:
           replicationFactor: 1
           auto-create-topics: true
-          brokers: localhost:9092
+          brokers: ${KAFKA_BROKER_URI}
       bindings:
         binding-in-sse:
           destination: sse-topic
@@ -166,7 +166,7 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: http://localhost:9080/realms/jhipster
+            issuer-uri: ${OAUTH2_ISSUER_URI}
         registration:
           oidc:
             client-id: internal

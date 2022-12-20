@@ -35,7 +35,7 @@ spring:
     consul:
       discovery:
         prefer-ip-address: true
-      host: localhost
+      host: ${CONSUL_HOST}
       port: 8500
   # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
   liquibase:
