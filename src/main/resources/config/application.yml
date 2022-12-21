@@ -120,13 +120,9 @@ spring:
           auto-create-topics: true
           brokers: ${KAFKA_BROKER_URI}
       bindings:
-        binding-in-sse:
-          destination: sse-topic
-          content-type: text/plain
-          group: customer-management
-        binding-out-sse:
-          destination: sse-topic
-          content-type: text/plain
+        producer-out-0:
+          destination: vehicle-created-topic
+          content-type: application/json
           group: customer-management
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
