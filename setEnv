@@ -1,0 +1,6 @@
+export CONSUL_HOST=ubuntu
+export OAUTH2_ISSUER_URI=http://ubuntu:9080/realms/jhipster
+export KAFKA_BROKER_URI=ubuntu:9092
+export ORION_URL=http://ubuntu:1026
+export IOT_AGENT_URL=http://ubuntu:4041
+export NOTIFICATION_SERVICE_URL=http://localhost:8080/services/vehicledata/api/vehicle-data-kafka/publish
