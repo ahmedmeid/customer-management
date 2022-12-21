@@ -13,6 +13,7 @@ public class VehicleSqlHelper {
         columns.add(Column.aliased("id", table, columnPrefix + "_id"));
         columns.add(Column.aliased("vehicle_id", table, columnPrefix + "_vehicle_id"));
         columns.add(Column.aliased("vehicle_reg_no", table, columnPrefix + "_vehicle_reg_no"));
+        columns.add(Column.aliased("device_id", table, columnPrefix + "_device_id"));
 
         columns.add(Column.aliased("owner_id", table, columnPrefix + "_owner_id"));
         return columns;

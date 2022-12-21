@@ -16,6 +16,11 @@
       "fieldName": "vehicleRegNo",
       "fieldType": "String",
       "fieldValidateRules": ["unique", "required"]
+    },
+    {
+      "fieldName": "deviceId",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
     }
   ],
   "fluentMethods": true,

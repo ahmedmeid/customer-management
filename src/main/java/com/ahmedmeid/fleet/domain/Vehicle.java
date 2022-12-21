@@ -11,7 +11,6 @@ import org.springframework.data.relational.core.mapping.Table;
  * A Vehicle.
  */
 @Table("vehicle")
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Vehicle implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +26,10 @@ public class Vehicle implements Serializable {
     @NotNull(message = "must not be null")
     @Column("vehicle_reg_no")
     private String vehicleRegNo;
+
+    @NotNull(message = "must not be null")
+    @Column("device_id")
+    private String deviceId;
 
     @Transient
     private Customer owner;
@@ -73,6 +76,19 @@ public class Vehicle implements Serializable {
 
     public void setVehicleRegNo(String vehicleRegNo) {
         this.vehicleRegNo = vehicleRegNo;
+    }
+
+    public String getDeviceId() {
+        return this.deviceId;
+    }
+
+    public Vehicle deviceId(String deviceId) {
+        this.setDeviceId(deviceId);
+        return this;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public Customer getOwner() {
@@ -123,6 +139,7 @@ public class Vehicle implements Serializable {
             "id=" + getId() +
             ", vehicleId='" + getVehicleId() + "'" +
             ", vehicleRegNo='" + getVehicleRegNo() + "'" +
+            ", deviceId='" + getDeviceId() + "'" +
             "}";
     }
 }

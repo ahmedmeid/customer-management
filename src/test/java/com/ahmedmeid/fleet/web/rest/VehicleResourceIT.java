@@ -47,6 +47,9 @@ class VehicleResourceIT {
     private static final String DEFAULT_VEHICLE_REG_NO = "AAAAAAAAAA";
     private static final String UPDATED_VEHICLE_REG_NO = "BBBBBBBBBB";
 
+    private static final String DEFAULT_DEVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_ID = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/vehicles";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -74,7 +77,7 @@ class VehicleResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Vehicle createEntity(EntityManager em) {
-        Vehicle vehicle = new Vehicle().vehicleId(DEFAULT_VEHICLE_ID).vehicleRegNo(DEFAULT_VEHICLE_REG_NO);
+        Vehicle vehicle = new Vehicle().vehicleId(DEFAULT_VEHICLE_ID).vehicleRegNo(DEFAULT_VEHICLE_REG_NO).deviceId(DEFAULT_DEVICE_ID);
         // Add required entity
         Customer customer;
         customer = em.insert(CustomerResourceIT.createEntity(em)).block();
@@ -89,7 +92,7 @@ class VehicleResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Vehicle createUpdatedEntity(EntityManager em) {
-        Vehicle vehicle = new Vehicle().vehicleId(UPDATED_VEHICLE_ID).vehicleRegNo(UPDATED_VEHICLE_REG_NO);
+        Vehicle vehicle = new Vehicle().vehicleId(UPDATED_VEHICLE_ID).vehicleRegNo(UPDATED_VEHICLE_REG_NO).deviceId(UPDATED_DEVICE_ID);
         // Add required entity
         Customer customer;
         customer = em.insert(CustomerResourceIT.createUpdatedEntity(em)).block();
@@ -141,6 +144,7 @@ class VehicleResourceIT {
         Vehicle testVehicle = vehicleList.get(vehicleList.size() - 1);
         assertThat(testVehicle.getVehicleId()).isEqualTo(DEFAULT_VEHICLE_ID);
         assertThat(testVehicle.getVehicleRegNo()).isEqualTo(DEFAULT_VEHICLE_REG_NO);
+        assertThat(testVehicle.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
     }
 
     @Test
@@ -208,6 +212,27 @@ class VehicleResourceIT {
     }
 
     @Test
+    void checkDeviceIdIsRequired() throws Exception {
+        int databaseSizeBeforeTest = vehicleRepository.findAll().collectList().block().size();
+        // set the field null
+        vehicle.setDeviceId(null);
+
+        // Create the Vehicle, which fails.
+
+        webTestClient
+            .post()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(vehicle))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        List<Vehicle> vehicleList = vehicleRepository.findAll().collectList().block();
+        assertThat(vehicleList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
     void getAllVehiclesAsStream() {
         // Initialize the database
         vehicleRepository.save(vehicle).block();
@@ -232,6 +257,7 @@ class VehicleResourceIT {
         Vehicle testVehicle = vehicleList.get(0);
         assertThat(testVehicle.getVehicleId()).isEqualTo(DEFAULT_VEHICLE_ID);
         assertThat(testVehicle.getVehicleRegNo()).isEqualTo(DEFAULT_VEHICLE_REG_NO);
+        assertThat(testVehicle.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
     }
 
     @Test
@@ -255,7 +281,9 @@ class VehicleResourceIT {
             .jsonPath("$.[*].vehicleId")
             .value(hasItem(DEFAULT_VEHICLE_ID))
             .jsonPath("$.[*].vehicleRegNo")
-            .value(hasItem(DEFAULT_VEHICLE_REG_NO));
+            .value(hasItem(DEFAULT_VEHICLE_REG_NO))
+            .jsonPath("$.[*].deviceId")
+            .value(hasItem(DEFAULT_DEVICE_ID));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -296,7 +324,9 @@ class VehicleResourceIT {
             .jsonPath("$.vehicleId")
             .value(is(DEFAULT_VEHICLE_ID))
             .jsonPath("$.vehicleRegNo")
-            .value(is(DEFAULT_VEHICLE_REG_NO));
+            .value(is(DEFAULT_VEHICLE_REG_NO))
+            .jsonPath("$.deviceId")
+            .value(is(DEFAULT_DEVICE_ID));
     }
 
     @Test
@@ -320,7 +350,7 @@ class VehicleResourceIT {
 
         // Update the vehicle
         Vehicle updatedVehicle = vehicleRepository.findById(vehicle.getId()).block();
-        updatedVehicle.vehicleId(UPDATED_VEHICLE_ID).vehicleRegNo(UPDATED_VEHICLE_REG_NO);
+        updatedVehicle.vehicleId(UPDATED_VEHICLE_ID).vehicleRegNo(UPDATED_VEHICLE_REG_NO).deviceId(UPDATED_DEVICE_ID);
 
         webTestClient
             .put()
@@ -337,6 +367,7 @@ class VehicleResourceIT {
         Vehicle testVehicle = vehicleList.get(vehicleList.size() - 1);
         assertThat(testVehicle.getVehicleId()).isEqualTo(UPDATED_VEHICLE_ID);
         assertThat(testVehicle.getVehicleRegNo()).isEqualTo(UPDATED_VEHICLE_REG_NO);
+        assertThat(testVehicle.getDeviceId()).isEqualTo(UPDATED_DEVICE_ID);
     }
 
     @Test
@@ -425,6 +456,7 @@ class VehicleResourceIT {
         Vehicle testVehicle = vehicleList.get(vehicleList.size() - 1);
         assertThat(testVehicle.getVehicleId()).isEqualTo(DEFAULT_VEHICLE_ID);
         assertThat(testVehicle.getVehicleRegNo()).isEqualTo(DEFAULT_VEHICLE_REG_NO);
+        assertThat(testVehicle.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
     }
 
     @Test
@@ -438,7 +470,7 @@ class VehicleResourceIT {
         Vehicle partialUpdatedVehicle = new Vehicle();
         partialUpdatedVehicle.setId(vehicle.getId());
 
-        partialUpdatedVehicle.vehicleId(UPDATED_VEHICLE_ID).vehicleRegNo(UPDATED_VEHICLE_REG_NO);
+        partialUpdatedVehicle.vehicleId(UPDATED_VEHICLE_ID).vehicleRegNo(UPDATED_VEHICLE_REG_NO).deviceId(UPDATED_DEVICE_ID);
 
         webTestClient
             .patch()
@@ -455,6 +487,7 @@ class VehicleResourceIT {
         Vehicle testVehicle = vehicleList.get(vehicleList.size() - 1);
         assertThat(testVehicle.getVehicleId()).isEqualTo(UPDATED_VEHICLE_ID);
         assertThat(testVehicle.getVehicleRegNo()).isEqualTo(UPDATED_VEHICLE_REG_NO);
+        assertThat(testVehicle.getDeviceId()).isEqualTo(UPDATED_DEVICE_ID);
     }
 
     @Test

@@ -27,6 +27,7 @@ public class VehicleRowMapper implements BiFunction<Row, String, Vehicle> {
         entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
         entity.setVehicleId(converter.fromRow(row, prefix + "_vehicle_id", String.class));
         entity.setVehicleRegNo(converter.fromRow(row, prefix + "_vehicle_reg_no", String.class));
+        entity.setDeviceId(converter.fromRow(row, prefix + "_device_id", String.class));
         entity.setOwnerId(converter.fromRow(row, prefix + "_owner_id", Long.class));
         return entity;
     }
