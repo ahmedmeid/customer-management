@@ -2,12 +2,12 @@ package com.ahmedmeid.fleet.web.rest;
 
 import com.ahmedmeid.fleet.domain.Vehicle;
 import com.ahmedmeid.fleet.repository.VehicleRepository;
+import com.ahmedmeid.fleet.service.VehicleCreatedEventPublisherService;
 import com.ahmedmeid.fleet.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -17,7 +17,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -41,8 +50,11 @@ public class VehicleResource {
 
     private final VehicleRepository vehicleRepository;
 
-    public VehicleResource(VehicleRepository vehicleRepository) {
+    private final VehicleCreatedEventPublisherService provisioningService;
+
+    public VehicleResource(VehicleRepository vehicleRepository, VehicleCreatedEventPublisherService provisioningService) {
         this.vehicleRepository = vehicleRepository;
+        this.provisioningService = provisioningService;
     }
 
     /**
@@ -58,7 +70,7 @@ public class VehicleResource {
         if (vehicle.getId() != null) {
             throw new BadRequestAlertException("A new vehicle cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        return vehicleRepository
+        Mono<ResponseEntity<Vehicle>> response = vehicleRepository
             .save(vehicle)
             .map(result -> {
                 try {
@@ -70,6 +82,10 @@ public class VehicleResource {
                     throw new RuntimeException(e);
                 }
             });
+
+        provisioningService.publishEvent(vehicle);
+
+        return response;
     }
 
     /**
@@ -153,6 +169,9 @@ public class VehicleResource {
                         }
                         if (vehicle.getVehicleRegNo() != null) {
                             existingVehicle.setVehicleRegNo(vehicle.getVehicleRegNo());
+                        }
+                        if (vehicle.getDeviceId() != null) {
+                            existingVehicle.setDeviceId(vehicle.getDeviceId());
                         }
 
                         return existingVehicle;
